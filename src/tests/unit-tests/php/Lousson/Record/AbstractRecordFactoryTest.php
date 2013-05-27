@@ -43,8 +43,8 @@
 namespace Lousson\Record;
 
 /** Dependencies: */
+use Lousson\Record\AbstractRecordTest;
 use Lousson\Record\AnyRecordFactory;
-use PHPUnit_Framework_TestCase;
 
 /**
  *  An abstract test case for record factories
@@ -53,7 +53,7 @@ use PHPUnit_Framework_TestCase;
  *  @package    org.lousson.record
  *  @link       http://www.phpunit.de/manual/current/en/
  */
-abstract class AbstractRecordFactoryTest extends PHPUnit_Framework_TestCase
+abstract class AbstractRecordFactoryTest extends AbstractRecordTest
 {
     /**
      *  Obtain the record factory to test
@@ -89,66 +89,6 @@ abstract class AbstractRecordFactoryTest extends PHPUnit_Framework_TestCase
      *          A list of media type parameters is returned on success
      */
     abstract public function provideParserMediaTypes();
-
-    /**
-     *  Provide arbitrary media type parameters
-     *
-     *  The probideArbitraryMediaTypes() method returns an array of
-     *  multiple items, each of whose is an array with one string item that
-     *  represents either a valid or an invalid media type name.
-     *
-     *  @return array
-     *          A list of media type parameters is returned on success
-     */
-    final public function probideArbitraryMediaTypes()
-    {
-        $invalid = $this->provideInvalidMediaTypes();
-        $valid = $this->provideValidMediaTypes();
-        $parameters = array_merge($invalid, $valid);
-        return $parameters;
-    }
-
-    /**
-     *  Provide valid media type parameters
-     *
-     *  The provideValidMediaTypes() method returns an array of multiple
-     *  items, each of whose is an array with one string item representing
-     *  a wellformed media type name.
-     *
-     *  @return array
-     *          A list of media type parameters is returned on success
-     */
-    final public function provideValidMediaTypes()
-    {
-        $parameters = array();
-
-        foreach (self::$validMediaTypes as $type) {
-            $parameters[] = array($type);
-        }
-
-        return $parameters;
-    }
-
-    /**
-     *  Provide invalid media type parameters
-     *
-     *  The provideInalidMediaTypes() method returns an array of multiple
-     *  items, each of whose is an array with one string item representing
-     *  a malformed media type name.
-     *
-     *  @return array
-     *          A list of media type parameters is returned on success
-     */
-    final public function provideInvalidMediaTypes()
-    {
-        $parameters = array();
-
-        foreach (self::$invalidMediaTypes as $type) {
-            $parameters[] = array($type);
-        }
-
-        return $parameters;
-    }
 
     /**
      *  Test the getRecordBuilder() method
@@ -439,32 +379,5 @@ abstract class AbstractRecordFactoryTest extends PHPUnit_Framework_TestCase
 
         return $parser;
     }
-
-    /**
-     *  A list of valid media type names
-     *
-     *  @var array
-     */
-    private static $validMediaTypes = array(
-        "application/octet-stream",
-        "application/xml",
-        "application/xml+html",
-        "application/json",
-        "text/html",
-        "text/javascript",
-        "text/json",
-    );
-
-    /**
-     *  A list of invalid media type names
-     *
-     *  @var array
-     */
-    private static $invalidMediaTypes = array(
-        "*/*",
-        "something-very-long-without-a-slash",
-        "invälid/germän-ümläütz",
-        "invalid/too/many/slashes",
-    );
 }
 

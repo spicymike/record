@@ -43,8 +43,8 @@
 namespace Lousson\Record;
 
 /** Dependencies: */
+use Lousson\Record\AbstractRecordTest;
 use Lousson\Record\AnyRecordBuilder;
-use PHPUnit_Framework_TestCase;
 
 /**
  *  An abstract test case for record builders
@@ -53,7 +53,7 @@ use PHPUnit_Framework_TestCase;
  *  @package    org.lousson.record
  *  @link       http://www.phpunit.de/manual/current/en/
  */
-abstract class AbstractRecordBuilderTest extends PHPUnit_Framework_TestCase
+abstract class AbstractRecordBuilderTest extends AbstractRecordTest
 {
     /**
      *  Obtain the record builder to test
@@ -83,58 +83,13 @@ abstract class AbstractRecordBuilderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     *  Provide valid buildRecord() parameters
-     *
-     *  The provideValidRecordData() method returns an array of multiple
-     *  items, each of whose is an array with one item; an associative data
-     *  array containing valid record data.
-     *
-     *  @return array
-     *          A list of buildRecord() parameters is returned on success
-     */
-    public function provideValidRecordData()
-    {
-        $data[][] = array("foo" => "bar", "baz" => null);
-        $data[][] = array("foobar" => array(1, 2, 3, 4, 5));
-        $data[][] = array("empty" => array());
-        $data[][] = array("numeric" => 1234);
-        $data[][] = array("float" => 123.34);
-        $data[][] = array("foo" => array("bar" => "baz"));
-
-        return $data;
-    }
-
-    /**
-     *  Provide invalid buildRecord() parameters
-     *
-     *  The provideInvalidRecordData() method returns an array of multiple
-     *  items, each of whose is an array with one item; an associative data
-     *  array containing invalid record data.
-     *
-     *  @return array
-     *          A list of buildRecord() parameters is returned on success
-     */
-    public function provideInvalidRecordData()
-    {
-        $data[][] = array(1, 2, 3);
-        $data[][] = array(null);
-        $data[][] = array(array("foo" => "bar"));
-        $data[][] = array("foo" => "bar", "baz");
-        $data[][] = array("äuml" => "german-umlautz");
-        $data[][] = array("some/nasty" => "stuff");
-        $data[][] = array("stdin" => STDIN);
-
-        return $data;
-    }
-
-    /**
      *  Test the buildRecord() method
      *
      *  The testBuildRecordError() method verifies that the builder's
      *  buildRecord() implementation raises a record exception if it is
      *  provided with invalid data.
      *
-     *  @dataProvider               provideInvalidRecordData
+     *  @dataProvider               provideInvalidData
      *  @expectedException          \Lousson\Record\AnyRecordException
      *  @test
      *
@@ -158,7 +113,7 @@ abstract class AbstractRecordBuilderTest extends PHPUnit_Framework_TestCase
      *
      *  @param  array               $data       The record's data
      *
-     *  @dataProvider               provideValidRecordData
+     *  @dataProvider               provideValidData
      *  @test
      *
      *  @throws \PHPUnit_Framework_AssertionFailedError
@@ -184,7 +139,7 @@ abstract class AbstractRecordBuilderTest extends PHPUnit_Framework_TestCase
      *
      *  @param  array               $data       The record's data
      *
-     *  @dataProvider               provideValidRecordData
+     *  @dataProvider               provideValidData
      *  @test
      *
      *  @throws \PHPUnit_Framework_AssertionFailedError

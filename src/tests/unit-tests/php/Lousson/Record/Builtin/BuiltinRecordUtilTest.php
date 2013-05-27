@@ -43,9 +43,9 @@
 namespace Lousson\Record\Builtin;
 
 /** Dependencies: */
+use Lousson\Record\AbstractRecordTest;
 use Lousson\Record\Builtin\BuiltinRecordUtil;
 use Lousson\Record\Error\InvalidRecordError;
-use PHPUnit_Framework_TestCase;
 
 /**
  *  A test case for the builtin record utility
@@ -54,128 +54,8 @@ use PHPUnit_Framework_TestCase;
  *  @package    org.lousson.record
  *  @link       http://www.phpunit.de/manual/current/en/
  */
-final class BuiltinRecordUtilTest extends PHPUnit_Framework_TestCase
+final class BuiltinRecordUtilTest extends AbstractRecordTest
 {
-    /**
-     *  Provide valid record data parameters
-     *
-     *  The provideValidData() method returns an array of multiple items,
-     *  each of whose is an array with one item; an associative, valid
-     *  record data array.
-     *
-     *  @return array
-     *          A list of record data parameters is returned on success
-     */
-    public function provideValidData()
-    {
-        $data[][] = array();
-        $data[][] = array("foo" => "bar", "baz" => array());
-        $data[][] = array("foo" => array("bar", "baz"));
-        $data[][] = array("foo" => null);
-        $data[][] = array("foo" => array("bar" => array("baz" => null)));
-
-        return $data;
-    }
-
-    /**
-     *  Provide invalid record data parameters
-     *
-     *  The provideInvalidData() method returns an array of multiple items,
-     *  each of whose is an array with one item; an invalid record data
-     *  array.
-     *
-     *  @return array
-     *          A list of record data parameters is returned on success
-     */
-    public function provideInvalidData()
-    {
-        $data[][] = array("foobar");
-        $data[][] = array(null);
-        $data[][] = array(null, "foo" => "bar");
-
-        return $data;
-    }
-
-    /**
-     *  Provide valid media type parameters
-     *
-     *  The provideValidMediaTypes() method returns an array of multiple
-     *  items, each of whose is an array with one string item representing
-     *  a wellformed media type.
-     *
-     *  @return array
-     *          A list of media type parameters is returned on success
-     */
-    public function provideValidMediaTypes()
-    {
-        return array(
-            array("application/json"),
-            array("application/textedit"),
-            array("application/vnd.php.serialized"),
-            array("text/json"),
-            array("text/x-json"),
-            array("zz-application/zz-winassoc-ini"),
-        );
-    }
-
-    /**
-     *  Provide invalid media type parameters
-     *
-     *  The provideInvalidMediaTypes() method returns an array of multiple
-     *  items, each of whose is an array with one string item representing
-     *  a malformed media type.
-     *
-     *  @return array
-     *          A list of media type parameters is returned on success
-     */
-    public function provideInvalidMediaTypes()
-    {
-        return array(
-            array("*/*"),
-            array("something-very-long-without-a-slash"),
-            array("invälid/germän-ümläütz"),
-            array("invalid/too/many/slashes"),
-        );
-    }
-
-    /**
-     *  Provide arbitrary record data parameters
-     *
-     *  The provideArbitraryData() method returns an array of multiple
-     *  items, each of whose is an array with one item; either an invalid
-     *  or a valid record data array.
-     *
-     *  @return array
-     *          A list of record data parameters is returned on success
-     */
-    public function provideArbitraryData()
-    {
-        $valid = $this->provideValidData();
-        $invalid = $this->provideInvalidData();
-        $both = array_merge($valid, $invalid);
-        sort($both);
-        return $both;
-    }
-
-    /**
-     *  Provide arbitrary media type parameters
-     *
-     *  The provideArbitraryMediaTypes() method returns an array of
-     *  multiple items, each of whose is an array with one string item;
-     *  either a valid or an invalid media type.
-     *
-     *  @return array
-     *          A list of media type parameters is returned on success
-     */
-    public function provideArbitraryMediaTypes()
-    {
-        $valid = $this->provideValidMediaTypes();
-        $invalid = $this->provideInvalidMediaTypes();
-        $both = array_merge($valid, $invalid);
-        sort($both);
-        return $both;
-    }
-
     /**
      *  @dataProvider               provideValidData
      *  @test

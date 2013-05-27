@@ -43,8 +43,8 @@
 namespace Lousson\Record;
 
 /** Dependencies: */
+use Lousson\Record\AbstractRecordTest;
 use Lousson\Record\AnyRecordParser;
-use PHPUnit_Framework_TestCase;
 
 /**
  *  An abstract test case for record parsers
@@ -53,7 +53,7 @@ use PHPUnit_Framework_TestCase;
  *  @package    org.lousson.record
  *  @link       http://www.phpunit.de/manual/current/en/
  */
-abstract class AbstractRecordParserTest extends PHPUnit_Framework_TestCase
+abstract class AbstractRecordParserTest extends AbstractRecordTest
 {
     /**
      *  Obtain the record parser to test
