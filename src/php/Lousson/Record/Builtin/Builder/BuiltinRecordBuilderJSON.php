@@ -90,7 +90,7 @@ class BuiltinRecordBuilderJSON extends BuiltinRecordBuilder
      *  moved into it's own method.
      *
      *  @param  string              $sequence       The byte sequence
-     *  @param  error               $error          The error message
+     *  @param  string              $error          The error message
      *
      *  @throws \Lousson\Record\AnyRecordException
      *          Raised in case $sequence is FALSE
