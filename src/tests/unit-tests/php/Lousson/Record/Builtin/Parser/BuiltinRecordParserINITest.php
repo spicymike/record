@@ -67,8 +67,8 @@ final class BuiltinRecordParserINITest extends AbstractRecordParserTest
      */
     public function getRecordParser()
     {
-        $builder = new BuiltinRecordParserINI();
-        return $builder;
+        $parser = new BuiltinRecordParserINI();
+        return $parser;
     }
 
     /**

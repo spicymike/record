@@ -67,8 +67,8 @@ class BuiltinRecordParserJSONTest extends AbstractRecordParserTest
      */
     public function getRecordParser()
     {
-        $builder = new BuiltinRecordParserJSON();
-        return $builder;
+        $parser = new BuiltinRecordParserJSON();
+        return $parser;
     }
 
     /**

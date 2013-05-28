@@ -67,8 +67,8 @@ class BuiltinRecordParserPHPTest extends AbstractRecordParserTest
      */
     public function getRecordParser()
     {
-        $builder = new BuiltinRecordParserPHP();
-        return $builder;
+        $parser = new BuiltinRecordParserPHP();
+        return $parser;
     }
 
     /**
