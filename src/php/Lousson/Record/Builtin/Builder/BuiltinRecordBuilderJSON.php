@@ -44,7 +44,7 @@ namespace Lousson\Record\Builtin\Builder;
 
 /** Dependencies: */
 use Lousson\Record\Builtin\BuiltinRecordBuilder;
-use Lousson\Record\Error\InvalidRecordError;
+use Lousson\Record\Error\RuntimeRecordError;
 
 /**
  *  A JSON record builder
@@ -76,14 +76,32 @@ class BuiltinRecordBuilderJSON extends BuiltinRecordBuilder
         $sequence = json_encode($record, JSON_HEX_TAG|JSON_HEX_APOS);
         $error = $php_errormsg;
         ini_set("track_errors", $setup);
+        $this->checkRecordSequence($sequence, $error);
+        return $sequence;
+    }
 
+    /**
+     *  Verify byte sequences built
+     *
+     *  The checkRecordSequence() method is used internally to check the
+     *  byte sequence built by buildRecord(). This used to be done inline,
+     *  but since it's tricky to actually trigger a scenario where the
+     *  operation fails, which made the snippet hard to test, it has been
+     *  moved into it's own method.
+     *
+     *  @param  string              $sequence       The byte sequence
+     *  @param  error               $error          The error message
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case $sequence is FALSE
+     */
+    private function checkRecordSequence($sequence, $error)
+    {
         if (false === $sequence) {
             $message = "Failed to build JSON record: $error";
             $code = RuntimeRecordError::E_INTERNAL_ERROR;
             throw new RuntimeRecordError($message, $code);
         }
-
-        return $sequence;
     }
 }
 

@@ -46,6 +46,7 @@ namespace Lousson\Record\Builtin\Builder;
 use Lousson\Record\AbstractRecordBuilderTest;
 use Lousson\Record\Builtin\Builder\BuiltinRecordBuilderJSON;
 use Lousson\Record\Builtin\Parser\BuiltinRecordParserJSON;
+use ReflectionMethod;
 
 /**
  *  A test case for the builtin JSON record builder
@@ -54,7 +55,7 @@ use Lousson\Record\Builtin\Parser\BuiltinRecordParserJSON;
  *  @package    org.lousson.record
  *  @link       http://www.phpunit.de/manual/current/en/
  */
-class BuiltinRecordBuilderJSONTest extends AbstractRecordBuilderTest
+final class BuiltinRecordBuilderJSONTest extends AbstractRecordBuilderTest
 {
     /**
      *  Obtain the record builder to test
@@ -86,6 +87,29 @@ class BuiltinRecordBuilderJSONTest extends AbstractRecordBuilderTest
     {
         $parser = new BuiltinRecordParserJSON();
         return $parser;
+    }
+
+    /**
+     *  Test the error handling
+     *
+     *  The testCheckRecordSequence() method is a test case for scenarios
+     *  where the JSON encoding in buildRecord() fails.
+     *
+     *  @expectedException          \Lousson\Record\AnyRecordException
+     *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case the test is successful
+     *
+     *  @throws \ReflectionException
+     *          Raised in case of an internal error
+     */
+    public function testCheckRecordSequence()
+    {
+        $builder = $this->getRecordBuilder();
+        $method = new ReflectionMethod($builder, "checkRecordSequence");
+        $method->setAccessible(true);
+        $method->invoke($builder, false, "UNKNOWN ERROR");
     }
 }
 
