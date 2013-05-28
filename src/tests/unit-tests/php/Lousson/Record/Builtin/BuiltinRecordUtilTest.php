@@ -57,19 +57,46 @@ use Lousson\Record\Error\InvalidRecordError;
 final class BuiltinRecordUtilTest extends AbstractRecordTest
 {
     /**
+     *  Test the validateData() method
+     *
+     *  The testValidateValidData() method tests the implementation of
+     *  the BuiltinRecordUtil::validateData() method with a set of valid
+     *  $data records.
+     *
+     *  @param  array               $data       The record's data
+     *
      *  @dataProvider               provideValidData
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a data record is considered invalid
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testValidateValidData(array $data)
     {
         BuiltinRecordUtil::validateData($data);
-        $this->assertTrue(BuiltinRecordUtil::isValidData($data));
     }
 
     /**
+     *  Test the validateData() method
+     *
+     *  The testValidateInvalidData() method tests the implementaion of
+     *  the BuiltinRecordUtil::validateData() method with a set of invalid
+     *  $data records.
+     *
+     *  @param  array               $data       The record's data
+     *
      *  @dataProvider               provideInvalidData
      *  @expectedException          \Lousson\Record\AnyRecordException
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a data record is considered invalid
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testValidateInvalidData(array $data)
     {
@@ -77,8 +104,23 @@ final class BuiltinRecordUtilTest extends AbstractRecordTest
     }
 
     /**
+     *  Test the isValidData() method
+     *
+     *  The testNormalizeInalidData() method tests the implementation of
+     *  the BuiltinRecordUtil::isValidData() method with an arbitrary set
+     *  of record data - including the expected consistency of the return
+     *  value with the behavior of the validateData() method.
+     *
+     *  @param  array               $data       The record's data
+     *
      *  @dataProvider               provideArbitraryData
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a data record is considered invalid
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testValidateArbitraryData(array $data)
     {
@@ -93,20 +135,53 @@ final class BuiltinRecordUtilTest extends AbstractRecordTest
     }
 
     /**
+     *  Test the normalizeData() method
+     *
+     *  The testNormalizeValidData() method tests the implementation of
+     *  the BuiltinRecordUtil::normalizeData() method with a set of valid
+     *  $data records.
+     *
+     *  @param  array               $data       The record's data
+     *
      *  @dataProvider               provideValidData
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a data record is considered invalid
+     *
+     *  @throws \PHPUnit_Framework_AssertionFailedError
+     *          Raised if normalizeData() does not return an array
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testNormalizeValidData(array $data)
     {
         $normalized = BuiltinRecordUtil::normalizeData($data);
         $this->assertInternalType("array", $normalized);
-        $this->assertTrue(BuiltinRecordUtil::isValidData($data));
     }
 
     /**
+     *  Test the normalizeData() method
+     *
+     *  The testNormalizeInalidData() method tests the implementation
+     *  of the BuiltinRecordUtil::normalizeData() method with a set of
+     *  invalid $data records.
+     *
+     *  @param  array               $data       The record's data
+     *
      *  @dataProvider               provideInvalidData
      *  @expectedException          \Lousson\Record\AnyRecordException
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a data record is considered invalid
+     *
+     *  @throws \PHPUnit_Framework_AssertionFailedError
+     *          Raised if normalizeData() does not return an array
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testNormalizeInvalidData(array $data)
     {
@@ -114,8 +189,26 @@ final class BuiltinRecordUtilTest extends AbstractRecordTest
     }
 
     /**
+     *  Test the isValidData() method
+     *
+     *  The testNormalizeInalidData() method tests the implementation of
+     *  the BuiltinRecordUtil::isValidData() method with an arbitrary set
+     *  of record data - including the expected consistency of the return
+     *  value with the behavior of the normalizeData() method.
+     *
+     *  @param  array               $data       The record's data
+     *
      *  @dataProvider               provideArbitraryData
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a type is considered invalid
+     *
+     *  @throws \PHPUnit_Framework_AssertionFailedError
+     *          Raised if normalizeData() does not return an array
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testNormalizeArbitraryData(array $data)
     {
@@ -130,19 +223,46 @@ final class BuiltinRecordUtilTest extends AbstractRecordTest
     }
 
     /**
+     *  Test the validateType() method
+     *
+     *  The testValidateValidType() method tests the implementation of
+     *  the BuiltinRecordUtil::validateType() method with a set of valid
+     *  media types.
+     *
+     *  @param  string              $type       The media type name
+     *
      *  @dataProvider               provideValidMediaTypes
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a type is considered invalid
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testValidateValidType($type)
     {
         BuiltinRecordUtil::validateType($type);
-        $this->assertTrue(BuiltinRecordUtil::isValidType($type));
     }
 
     /**
+     *  Test the validateType() method
+     *
+     *  The testValidateInvalidType() method tests the implementation of
+     *  the BuiltinRecordUtil::validateType() method with a set of invalid
+     *  media types.
+     *
+     *  @param  string              $type       The media type name
+     *
      *  @dataProvider               provideInvalidMediaTypes
      *  @expectedException          \Lousson\Record\AnyRecordException
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a type is considered invalid
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testValidateInvalidType($type)
     {
@@ -150,8 +270,23 @@ final class BuiltinRecordUtilTest extends AbstractRecordTest
     }
 
     /**
+     *  Test the isValidType() method
+     *
+     *  The testNormalizeInalidType() method tests the implementation of
+     *  the BuiltinRecordUtil::isValidType() method with an arbitrary set
+     *  of media types - including the expected consistency of the return
+     *  value with the behavior of the validateType() method.
+     *
+     *  @param  string              $type       The media type name
+     *
      *  @dataProvider               provideArbitraryMediaTypes
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a type is considered invalid
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testValidateArbitraryType($type)
     {
@@ -166,20 +301,53 @@ final class BuiltinRecordUtilTest extends AbstractRecordTest
     }
 
     /**
+     *  Test the normalizeType() method
+     *
+     *  The testNormalizeValidType() method tests the implementation of
+     *  the BuiltinRecordUtil::normalizeType() method with a set of valid
+     *  media types.
+     *
+     *  @param  string              $type       The media type name
+     *
      *  @dataProvider               provideValidMediaTypes
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a type is considered invalid
+     *
+     *  @throws \PHPUnit_Framework_AssertionFailedError
+     *          Raised if normalizeType() does not return a string
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testNormalizeValidType($type)
     {
         $normalized = BuiltinRecordUtil::normalizeType($type);
         $this->assertInternalType("string", $normalized);
-        $this->assertTrue(BuiltinRecordUtil::isValidType($type));
     }
 
     /**
+     *  Test the normalizeType() method
+     *
+     *  The testNormalizeInalidType() method tests the implementation of
+     *  the BuiltinRecordUtil::normalizeType() method with a set of invalid
+     *  media types.
+     *
+     *  @param  string              $type       The media type name
+     *
      *  @dataProvider               provideInvalidMediaTypes
      *  @expectedException          \Lousson\Record\AnyRecordException
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a type is considered invalid
+     *
+     *  @throws \PHPUnit_Framework_AssertionFailedError
+     *          Raised if normalizeType() does not return a string
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testNormalizeInvalidType($type)
     {
@@ -187,8 +355,26 @@ final class BuiltinRecordUtilTest extends AbstractRecordTest
     }
 
     /**
+     *  Test the isValidType() method
+     *
+     *  The testNormalizeInalidType() method tests the implementation of
+     *  the BuiltinRecordUtil::isValidType() method with an arbitrary set
+     *  of media types - including the expected consistency of the return
+     *  value with the behavior of the normalizeType() method.
+     *
+     *  @param  string              $type       The media type name
+     *
      *  @dataProvider               provideArbitraryMediaTypes
      *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised if a type is considered invalid
+     *
+     *  @throws \PHPUnit_Framework_AssertionFailedError
+     *          Raised if normalizeType() does not return a string
+     *
+     *  @throws \Exception
+     *          Raised in case of an internal error
      */
     public function testNormalizeArbitraryType($type)
     {
