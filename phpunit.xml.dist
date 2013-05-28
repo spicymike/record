@@ -14,6 +14,12 @@
         <whitelist addUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">src/bin</directory>
             <directory suffix=".php">src/php</directory>
+           <exclude>
+              <file>src/php/Lousson/Record/AnyRecordBuilder.php</file>
+              <file>src/php/Lousson/Record/AnyRecordException.php</file>
+              <file>src/php/Lousson/Record/AnyRecordFactory.php</file>
+              <file>src/php/Lousson/Record/AnyRecordParser.php</file>
+           </exclude> 
         </whitelist>
     </filter>
     <logging>
