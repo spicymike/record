@@ -45,6 +45,7 @@ namespace Lousson\Record\Builtin\Parser;
 /** Dependencies: */
 use Lousson\Record\AbstractRecordParserTest;
 use Lousson\Record\Builtin\Parser\BuiltinRecordParserINI;
+use ReflectionMethod;
 
 /**
  *  A test case for the builtin INI record parser
@@ -53,7 +54,7 @@ use Lousson\Record\Builtin\Parser\BuiltinRecordParserINI;
  *  @package    org.lousson.record
  *  @link       http://www.phpunit.de/manual/current/en/
  */
-class BuiltinRecordParserINITest extends AbstractRecordParserTest
+final class BuiltinRecordParserINITest extends AbstractRecordParserTest
 {
     /**
      *  Obtain the record parser to test
@@ -108,6 +109,29 @@ class BuiltinRecordParserINITest extends AbstractRecordParserTest
         $data[][] = "foo[bar] = 1\nfoo[bäz] = 1";
 
         return $data;
+    }
+
+    /**
+     *  Test the error handling
+     *
+     *  The testCheckRecordData() method is a test case for scenarios
+     *  where the INI parsing in parseRecord() fails.
+     *
+     *  @expectedException          \Lousson\Record\AnyRecordException
+     *  @test
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case the test is successful
+     *
+     *  @throws \ReflectionException
+     *          Raised in case of an internal error
+     */
+    public function testCheckRecordData()
+    {
+        $builder = $this->getRecordParser();
+        $method = new ReflectionMethod($builder, "checkRecordData");
+        $method->setAccessible(true);
+        $method->invoke($builder, false, "UNKNOWN ERROR");
     }
 }
 

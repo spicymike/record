@@ -75,15 +75,31 @@ class BuiltinRecordParserINI extends BuiltinRecordParser
         $data = parse_ini_string($sequence, true, INI_SCANNER_RAW);
         $error = $php_errormsg;
         ini_set("track_errors", $setup);
+        $this->checkRecordData($data, $error);
+        $record = $this->normalizeData($data);
+        return $record;
+    }
 
+    /**
+     *  Verify record data parsed
+     *
+     *  The checkRecordData() method is used internally to check the data
+     *  parsed by parseRecord(). This used to be done inline, but since it
+     *  is hard to test this way, it has been moved into its own method.
+     *
+     *  @param  array               $data           The record data
+     *  @param  string              $error          The error message
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case $sequence is not an array
+     */
+    private function checkRecordData($data, $error)
+    {
         if (!is_array($data)) {
             $message = "Could not parse INI record: $error";
             $code = InvalidRecordError::E_INTERNAL_ERROR;
             throw new InvalidRecordError($message, $code);
         }
-
-        $record = $this->normalizeData($data);
-        return $record;
     }
 }
 
