@@ -45,9 +45,11 @@ namespace Lousson\Record\Generic;
 /** Dependencies: */
 use Lousson\Record\AnyRecordBuilder;
 use Lousson\Record\AnyRecordFactory;
+use Lousson\Record\AnyRecordHandler;
 use Lousson\Record\AnyRecordParser;
 use Lousson\Record\Builtin\BuiltinRecordUtil;
 use Lousson\Record\Error\RuntimeRecordError;
+use Lousson\Record\Generic\GenericRecordHandler;
 
 /**
  *  A generic record factory
@@ -149,6 +151,41 @@ class GenericRecordFactory implements AnyRecordFactory
     }
 
     /**
+     *  Obtain a record handler
+     *
+     *  The getRecordHandler() method either returns a record handler that
+     *  is associated with the given media $type or, in case no handler is
+     *  available, raises an exception.
+     *
+     *  @param  string              $type       The media type
+     *
+     *  @return \Lousson\Record\AnyRecordHandler
+     *          A record handler instance is returned on success
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case no handler is available for the given $type
+     */
+    public function getRecordHandler($type)
+    {
+        $normalizedType = BuiltinRecordUtil::normalizeType($type);
+
+        if (isset($this->handlers[$normalizedType])) {
+            $handler = $this->handlers[$normalizedType];
+        }
+        else if (null !== $this->base &&
+                $this->base->hasRecordHandler($normalizedType)) {
+            $handler = $this->base->getRecordHandler($normalizedType);
+        }
+        else {
+            $parser = $this->getRecordParser($normalizedType);
+            $builder = $this->getRecordBuilder($normalizedType);
+            $handler = new GenericRecordHandler($parser, $builder);
+        }
+
+        return $handler;
+    }
+
+    /**
      *  Determine the availability of a parser
      *
      *  The hasRecordBuilder() method determines whether the a record
@@ -203,6 +240,34 @@ class GenericRecordFactory implements AnyRecordFactory
     }
 
     /**
+     *  Determine the availability of a handler
+     *
+     *  The hasRecordHandler() method determines whether the a record
+     *  handler associated with the given media $type is available.
+     *
+     *  @param  string              $type       The media type
+     *
+     *  @return bool
+     *          TRUE is returned if a handler for the given $type is
+     *          available, FALSE otherwise
+     */
+    public function hasRecordHandler($type)
+    {
+        if ($this->hasRecordParser($type) &&
+                $this->hasRecordBuilder($type)) {
+            $hasRecordHandler = true;
+        }
+        else if (null !== $this->base) {
+            $hasRecordHandler = $this->base->hasRecordHandler($type);
+        }
+        else {
+            $hasRecordHandler = false;
+        }
+
+        return $hasRecordHandler;
+    }
+
+    /**
      *  Assign a record parser
      *
      *  The setRecordParser() method associates the given media $type
@@ -230,6 +295,31 @@ class GenericRecordFactory implements AnyRecordFactory
     {
         $normalizedType = BuiltinRecordUtil::normalizeType($type);
         $this->builders[$normalizedType] = $builder;
+    }
+
+    /**
+     *  Assign a record handler
+     *
+     *  The setRecordHandler() method associated the given media $type
+     *  with the record $handler provided. Note that this method will also
+     *  associate the handler as a parser and builder for the media $type,
+     *  unless either entity has been assigned before.
+     *
+     *  @param  string              $type       The media type
+     *  @param  AnyRecordHandler    $handler    The record handler
+     */
+    public function setRecordHandler($type, AnyRecordHandler $handler)
+    {
+        $normalizedType = BuiltinRecordUtil::normalizeType($type);
+        $this->handlers[$normalizedType] = $handler;
+
+        if (!isset($this->parsers[$normalizedType])) {
+            $this->parsers[$normalizedType] = $handler;
+        }
+
+        if (!isset($this->builders[$normalizedType])) {
+            $this->builders[$normalizedType] = $handler;
+        }
     }
 
     /**

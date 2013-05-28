@@ -32,7 +32,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /**
- *  Lousson\Record\Generic\GenericRecordFactoryBasicTest class definition
+ *  Lousson\Record\Generic\GenericRecordHandler class definition
  *
  *  @package    org.lousson.record
  *  @copyright  (c) 2013, The Lousson Project
@@ -43,88 +43,91 @@
 namespace Lousson\Record\Generic;
 
 /** Dependencies: */
-use Lousson\Record\Generic\GenericRecordFactoryTest;
 use Lousson\Record\AnyRecordBuilder;
+use Lousson\Record\AnyRecordHandler;
 use Lousson\Record\AnyRecordParser;
-use Lousson\Record\Builtin\Builder\BuiltinRecordBuilderJSON;
-use Lousson\Record\Builtin\BuiltinRecordFactory;
-use Lousson\Record\Builtin\Parser\BuiltinRecordParserINI;
-use Lousson\Record\Builtin\Parser\BuiltinRecordParserJSON;
-use Lousson\Record\Generic\GenericRecordFactory;
-use Lousson\Record\Generic\GenericRecordHandler;
 
 /**
- *  A test case for the generic record factory
+ *  A generic record handler
+ *
+ *  The GenericRecordHandler class allows the combination of record parser
+ *  and builder instances, in order to easily implement a unified entitiy
+ *  capable of both operations; parsing and building records.
  *
  *  @since      lousson/record-0.1.0
  *  @package    org.lousson.record
- *  @link       http://www.phpunit.de/manual/current/en/
  */
-class GenericRecordFactoryBasicTest extends GenericRecordFactoryTest
+class GenericRecordHandler implements AnyRecordHandler
 {
     /**
-     *  Obtain the record factory to test
+     *  Create a handler instance
      *
-     *  The getRecordFactory() method returns the record factory instance
-     *  that is used in the tests.
+     *  The constructor requires provisioning of the $parser and $builder
+     *  instance the handler shall operate with.
      *
-     *  @return \Lousson\Record\Generic\GenericRecordFactory
-     *          A generic record factory instance is returned on success
+     *  @param  AnyRecordParser     $parser     The record parser
+     *  @param  AnyRecordBuilder    $builder    The record builder
      */
-    public function getGenericRecordFactory()
-    {
-        $factory = new GenericRecordFactory();
-
-        $iniParser = new BuiltinRecordParserINI();
-        $factory->setRecordParser("application/textedit", $iniParser);
-
-        $jsonBuilder = new BuiltinRecordBuilderJSON();
-        $factory->setRecordBuilder("application/json", $jsonBuilder);
-
-        $jsonParser = new BuiltinRecordParserJSON();
-        $factory->setRecordParser("application/json", $jsonParser);
-
-        $handler = new GenericRecordHandler($jsonParser, $jsonBuilder);
-        $factory->setRecordHandler("text/json", $handler);
-        $factory->setRecordBuilder("text/json", $jsonBuilder);
-
-        return $factory;
+    public function __construct(
+        AnyRecordParser $parser,
+        AnyRecordBuilder $builder
+    ) {
+        $this->parser = $parser;
+        $this->builder = $builder;
     }
 
     /**
-     *  Provide supported media type parameters
+     *  Parse record content
      *
-     *  The provideBuilderMediaTypes() method returns an array of multiple
-     *  items, each of whose is an array with one string item representing
-     *  a media type the factory is supposed to provide a builder for.
+     *  The parseRecord() method returns an array representing the given
+     *  byte $sequence in its unserialized form.
+     *
+     *  @param  string              $sequence   The record's byte sequence
      *
      *  @return array
-     *          A list of media type parameters is returned on success
+     *          The unserialized record is returned on success
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Indicates a malformed $sequence or an internal error
      */
-    public function provideBuilderMediaTypes()
+    public function parseRecord($sequence)
     {
-        return array(
-            array("application/json"),
-            array("text/json"),
-        );
+        $record = $this->parser->parseRecord($sequence);
+        return $record;
     }
 
     /**
-     *  Provide supported media type parameters
+     *  Build record content
      *
-     *  The provideParserMediaTypes() method returns an array of multiple
-     *  items, each of whose is an array with one string item representing
-     *  a media type the factory is supposed to provide a parser for.
+     *  The buildRecord() method returns a byte sequence representing the
+     *  given $record in its serialized form.
      *
-     *  @return array
-     *          A list of media type parameters is returned on success
+     *  @param  array               $data       The record's data
+     *
+     *  @return string
+     *          The serialized record is returned on success
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case of malformed $data or internal errors
      */
-    public function provideParserMediaTypes()
+    public function buildRecord(array $data)
     {
-        return array(
-            array("application/json"),
-            array("application/textedit"),
-        );
+        $record = $this->builder->buildRecord($data);
+        return $record;
     }
+
+    /**
+     *  The record parser
+     *
+     *  @var \Lousson\Record\AnyRecordParser
+     */
+    private $parser;
+
+    /**
+     *  The record builder
+     *
+     *  @var \Lousson\Record\AnyRecordBuilder
+     */
+    private $builder;
 }
 

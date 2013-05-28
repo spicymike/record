@@ -93,6 +93,23 @@ interface AnyRecordFactory
     public function getRecordBuilder($type);
 
     /**
+     *  Obtain a record handler
+     *
+     *  The getRecordHandler() method either returns a record handler that
+     *  is associated with the given media $type or, in case no handler is
+     *  available, raises an exception.
+     *
+     *  @param  string              $type       The media type
+     *
+     *  @return \Lousson\Record\AnyRecordHandler
+     *          A record handler instance is returned on success
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case no handler is available for the given $type
+     */
+    public function getRecordHandler($type);
+
+    /**
      *  Determine the availability of a parser
      *
      *  The hasRecordBuilder() method determines whether the a record
@@ -119,5 +136,19 @@ interface AnyRecordFactory
      *          available, FALSE otherwise
      */
     public function hasRecordBuilder($type);
+
+    /**
+     *  Determine the availability of a handler
+     *
+     *  The hasRecordHandler() method determines whether the a record
+     *  handler associated with the given media $type is available.
+     *
+     *  @param  string              $type       The media type
+     *
+     *  @return bool
+     *          TRUE is returned if a handler for the given $type is
+     *          available, FALSE otherwise
+     */
+    public function hasRecordHandler($type);
 }
 

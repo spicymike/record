@@ -32,7 +32,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /**
- *  Lousson\Record\Generic\GenericRecordFactoryBasicTest class definition
+ *  Lousson\Record\Generic\GenericRecordHandlerTest definition
  *
  *  @package    org.lousson.record
  *  @copyright  (c) 2013, The Lousson Project
@@ -43,88 +43,51 @@
 namespace Lousson\Record\Generic;
 
 /** Dependencies: */
-use Lousson\Record\Generic\GenericRecordFactoryTest;
-use Lousson\Record\AnyRecordBuilder;
-use Lousson\Record\AnyRecordParser;
-use Lousson\Record\Builtin\Builder\BuiltinRecordBuilderJSON;
-use Lousson\Record\Builtin\BuiltinRecordFactory;
-use Lousson\Record\Builtin\Parser\BuiltinRecordParserINI;
-use Lousson\Record\Builtin\Parser\BuiltinRecordParserJSON;
-use Lousson\Record\Generic\GenericRecordFactory;
+use Lousson\Record\AbstractRecordBuilderTest;
+use Lousson\Record\Builtin\Builder\BuiltinRecordBuilderPHP;
+use Lousson\Record\Builtin\Parser\BuiltinRecordParserPHP;
 use Lousson\Record\Generic\GenericRecordHandler;
 
 /**
- *  A test case for the generic record factory
+ *  A test case for the builtin PHP record builder
  *
  *  @since      lousson/record-0.1.0
  *  @package    org.lousson.record
  *  @link       http://www.phpunit.de/manual/current/en/
  */
-class GenericRecordFactoryBasicTest extends GenericRecordFactoryTest
+final class GenericRecordHandlerTest extends AbstractRecordBuilderTest
 {
     /**
-     *  Obtain the record factory to test
+     *  Obtain the record builder to test
      *
-     *  The getRecordFactory() method returns the record factory instance
+     *  The getRecordBuilder() method returns the record builder instance
      *  that is used in the tests.
      *
-     *  @return \Lousson\Record\Generic\GenericRecordFactory
-     *          A generic record factory instance is returned on success
+     *  @return \Lousson\Record\AnyRecordBuilder
+     *          A record builder instance is returned on success
      */
-    public function getGenericRecordFactory()
+    public function getRecordBuilder()
     {
-        $factory = new GenericRecordFactory();
-
-        $iniParser = new BuiltinRecordParserINI();
-        $factory->setRecordParser("application/textedit", $iniParser);
-
-        $jsonBuilder = new BuiltinRecordBuilderJSON();
-        $factory->setRecordBuilder("application/json", $jsonBuilder);
-
-        $jsonParser = new BuiltinRecordParserJSON();
-        $factory->setRecordParser("application/json", $jsonParser);
-
-        $handler = new GenericRecordHandler($jsonParser, $jsonBuilder);
-        $factory->setRecordHandler("text/json", $handler);
-        $factory->setRecordBuilder("text/json", $jsonBuilder);
-
-        return $factory;
+        $parser = new BuiltinRecordParserPHP();
+        $builder = new BuiltinRecordBuilderPHP();
+        $handler = new GenericRecordHandler($parser, $builder);
+        return $handler;
     }
 
     /**
-     *  Provide supported media type parameters
+     *  Obtain the associated record parser, if any
      *
-     *  The provideBuilderMediaTypes() method returns an array of multiple
-     *  items, each of whose is an array with one string item representing
-     *  a media type the factory is supposed to provide a builder for.
+     *  The getRecordParser() method returns either a record parser
+     *  instance that can reverse the builder's operation or NULL, in
+     *  case no such parser is available.
      *
-     *  @return array
-     *          A list of media type parameters is returned on success
+     *  @return \Lousson\Record\AnyRecordParser
+     *          A record parser instance is returned on success,
+     *          NULL otherwise
      */
-    public function provideBuilderMediaTypes()
+    public function getRecordParser()
     {
-        return array(
-            array("application/json"),
-            array("text/json"),
-        );
-    }
-
-    /**
-     *  Provide supported media type parameters
-     *
-     *  The provideParserMediaTypes() method returns an array of multiple
-     *  items, each of whose is an array with one string item representing
-     *  a media type the factory is supposed to provide a parser for.
-     *
-     *  @return array
-     *          A list of media type parameters is returned on success
-     */
-    public function provideParserMediaTypes()
-    {
-        return array(
-            array("application/json"),
-            array("application/textedit"),
-        );
+        return $this->getRecordBuilder();
     }
 }
 

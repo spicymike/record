@@ -91,6 +91,15 @@ abstract class AbstractRecordFactoryTest extends AbstractRecordTest
     abstract public function provideParserMediaTypes();
 
     /**
+     *
+     */
+    public function provideHandlerMediaTypes()
+    {
+        $parameters = $this->provideBuilderMediaTypes();
+        return $parameters;
+    }
+
+    /**
      *  Test the getRecordBuilder() method
      *
      *  The testGetRecordBuilder() method is a test for implementations of
@@ -140,6 +149,32 @@ abstract class AbstractRecordFactoryTest extends AbstractRecordTest
     public function testGetRecordParser($type)
     {
         $parser = $this->getRealRecordParser($type);
+    }
+
+    /**
+     *  Test the getRecordHandler() method
+     *
+     *  The testGetRecordHandler() method is a test case for implementations
+     *  of getRecordHandler() as defined by the AnyRecordFactory interface.
+     *
+     *  @param  string              $type       The media type
+     *
+     *  @dataProvider               provideHandlerMediaTypes
+     *  @test
+     *
+     *  @throws \PHPUnit_Framework_AssertionFailedError
+     *          Raised in case getRecordFactory() does not return a record
+     *          factory or getRecordHandler() does not return a handler
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case the media $type is invalid or not supported
+     *
+     *  @throws \Exception
+     *          Raised in case of internal errors
+     */
+    public function testGetRecordHandler($type)
+    {
+        $handler = $this->getRealRecordHandler($type);
     }
 
     /**
@@ -227,6 +262,48 @@ abstract class AbstractRecordFactoryTest extends AbstractRecordTest
     }
 
     /**
+     *  Test the hasRecordHandler() method
+     *
+     *  The testHasRecordHandler() method is a smoke test for the factory's
+     *  hasRecordHandler() implementation that verifies the consistency of
+     *  the return value with the behavior of getRecordHandler().
+     *
+     *  @param  string              $type       The media type
+     *
+     *  @dataProvider               provideValidMediaTypes
+     *  @test
+     *
+     *  @throws \PHPUnit_Framework_AssertionFailedError
+     *          Raised in case getRecordFactory() does not return a record
+     *          factory or getRecordHandler() does not return a handler
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case the media $type is invalid or not supported
+     *
+     *  @throws \Exception
+     *          Raised in case of internal errors
+     */
+    public function testHasRecordHandler($type)
+    {
+        $factory = $this->getRealRecordFactory();
+        $factoryHasHandler = $factory->hasRecordHandler($type);
+        $factoryClass = get_class($factory);
+
+        $this->assertInternalType(
+            "bool", $factoryHasHandler,
+            "The {$factoryClass}::hasRecordHandler() method must return ".
+            "either TRUE or FALSE"
+        );
+
+        if (!$factoryHasHandler) {
+            $exceptionInterface = "Lousson\\Record\\AnyRecordException";
+            $this->setExpectedException($exceptionInterface);
+        }
+
+        $this->fetchRecordHandler($factory, $type);
+    }
+
+    /**
      *  Obtain a verified record factory
      *
      *  The getRealRecordFactory() method is used internally to obtain an
@@ -311,6 +388,35 @@ abstract class AbstractRecordFactoryTest extends AbstractRecordTest
     }
 
     /**
+     *  Obtain a verified record handler
+     *
+     *  The getRealRecordHandler() method is used to obtain a record
+     *  handler instance for the given $type from the factory that is
+     *  returned by the getRealRecordFactory() method.
+     *
+     *  @param  string              $type       The type to pass on
+     *
+     *  @return \Lousson\Record\AnyRecordHandler
+     *          A record handler instance is returned on success
+     *
+     *  @throws \PHPUnit_Framework_AssertionFailedError
+     *          Raised in case getRecordFactory() does not return a record
+     *          factory or getRecordHandler() does not return a handler
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case the media $type is invalid or not supported
+     *
+     *  @throws \Exception
+     *          Raised in case of internal errors
+     */
+    final protected function getRealRecordHandler($type)
+    {
+        $factory = $this->getRealRecordFactory();
+        $handler = $this->fetchRecordHandler($factory, $type);
+        return $handler;
+    }
+
+    /**
      *  Fetch a record builder instance
      *
      *  The fetchRecordBuilder() method is used internally to invoke the
@@ -378,6 +484,41 @@ abstract class AbstractRecordFactoryTest extends AbstractRecordTest
         );
 
         return $parser;
+    }
+
+    /**
+     *  Fetch a record handler instance
+     *
+     *  The fetchRecordHandler() method is used internally to invoke the
+     *  $factory's getRecordHandler() method. It verifies that the return
+     *  value is a record handler instance before returning the object.
+     *
+     *  @param  AnyRecordFactory    $factory    The factory to use
+     *  @param  string              $type       The type to pass on
+     *
+     *  @return \Lousson\Record\AnyRecordHandler
+     *          A record handler instance is returned on success
+     *
+     *  @throws \PHPUnit_Framework_AssertionFailedError
+     *          Raised in case getRecordHandler() does not return a handler
+     *
+     *  @throws \Lousson\Record\AnyRecordException
+     *          Raised in case the media $type is invalid or not supported
+     *
+     *  @throws \Exception
+     *          Raised in case the $factory caused an internal error
+     */
+    private function fetchRecordHandler(AnyRecordFactory $factory, $type)
+    {
+        $handler = $factory->getRecordHandler($type);
+        $factoryClass = get_class($factory);
+        $this->assertInstanceOf(
+            "Lousson\\Record\\AnyRecordHandler", $handler,
+            "The $factoryClass::getRecordHandler() method must return an ".
+            "instance of the AnyRecordHandler interface"
+        );
+
+        return $handler;
     }
 }
 
